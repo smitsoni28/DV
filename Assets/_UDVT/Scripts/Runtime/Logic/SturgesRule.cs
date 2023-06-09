@@ -122,10 +122,10 @@ public class SturgesRule
 
     public double[] GetBinRanges()
     {
-        int numBins = (int)Math.Ceiling(Math.Log(data.Length, 2) + 1);
+        int numBins = (int)Math.Ceiling(Math.Log(data.Length, 2));
         double min = data.Min();
         double max = data.Max();
-        double binSize = (max - min + 1) / numBins;
+        double binSize = (max - min) / numBins;
 
         double[] binRanges = new double[numBins + 1];
         for (int i = 0; i <= numBins; i++)

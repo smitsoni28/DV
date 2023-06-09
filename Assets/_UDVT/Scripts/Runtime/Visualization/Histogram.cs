@@ -84,7 +84,7 @@ public class Histogram : Vis
 
         visContainer.SetChannel(VisChannel.XPos, selectedBinRanges);
         visContainer.SetChannel(VisChannel.YSize, selectedFrequencies);
-        visContainer.SetChannel(VisChannel.Color, dataSets[0].ElementAt(1).Value);
+        visContainer.SetChannel(VisChannel.Color, dataSets[0].ElementAt(0).Value);
 
         // Draw all Data Points with the provided Channels for the selected binning rule
         visContainer.CreateDataMarks(dataMarkPrefab);
