@@ -29,15 +29,15 @@ public class ScottRule
         int numBins = (int)Math.Ceiling((data.Max() - data.Min()) / h);
         double min = data.Min();
         double max = data.Max();
-        double binSize = (max - min) / numBins;
+        double binSize = (max - min + 1) / numBins;
 
-        double[] binRanges = new double[numBins + 1];
-        for (int i = 0; i <= numBins; i++)
+        double[] binRanges = new double[numBins];
+        for (int i = 0; i < numBins; i++)
         {
-            binRanges[i] = min + i * binSize;
+            binRanges[i] = (1 + i) * binSize;
         }
-        Debug.Log("Data set length in Scott:: " + data.Length);
-        Debug.Log("Selected bin ranges length in Scott: " + binRanges.Length);
+        // Debug.Log("Data set length in Scott:: " + data.Length);
+        // Debug.Log("Selected bin ranges length in Scott: " + binRanges.Length);
     
         
 
@@ -47,13 +47,18 @@ public class ScottRule
     public double[] GetFrequencies()
     {
         double[] binRanges = GetBinRanges();
-        double[] frequencies = new double[binRanges.Length - 1];
+        double[] frequencies = new double[binRanges.Length];
 
         for (int i = 0; i < frequencies.Length; i++)
         {
+            if (i == 0) {
+                frequencies[i] = data.Count(x => x >= this.data.Min() && x < binRanges[0]);
+            }
+
             frequencies[i] = data.Count(x => x >= binRanges[i] && x < binRanges[i + 1]);
         }
-        Debug.Log("Selected frequencies length in Scott: " + frequencies.Length);
+        //Debug.Log("Selected frequencies length in Sturges: " + frequencies.Length);
         return frequencies;
     }
+    
 }
