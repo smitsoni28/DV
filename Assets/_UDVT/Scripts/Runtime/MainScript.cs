@@ -52,6 +52,8 @@ public class MainScript : MonoBehaviour
 
         //## 03: Visualize Dataset
 
+        //vis = Vis.GetSpecificVisType(VisType.Scatterplot);
+        //vis = Vis.GetSpecificVisType(VisType.Histogram);
         vis = Vis.GetSpecificVisType(VisType.Densityplot);
         vis.AppendData(dataSet);
         vis.CreateVis(this.gameObject);

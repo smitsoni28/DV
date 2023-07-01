@@ -150,7 +150,6 @@ public class Vis
                 return;
             }
         }
-        Debug.Log("Data set length in Vis.cs: " + dataSets[0].Count());
 
 
     }
@@ -202,11 +201,16 @@ public class Vis
     {
         switch (vistype)
         {
-             default:
+            // default:
+                //case VisType.Scatterplot:
+                //return new Histogram();
+                //return new DensityPlot();
+
+            default:
              case VisType.Scatterplot:
                 return new VisScatterplot();
             case VisType.Histogram:
-                return new Histogram();
+                return new VisHistogram();
             case VisType.Densityplot:
                 return new VisDensityplot();
         }
