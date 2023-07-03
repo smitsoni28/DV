@@ -78,4 +78,11 @@ public class KernelDensityEstimation
         }
         return result;
     }
+    /*public static double CalculateBandwidth(double[] data)
+    {
+        // Calculate bandwidth using a rule-of-thumb method, such as Scott's rule
+        double standardDeviation = Math.Sqrt(data.Select(x => (x - data.Average()) * (x - data.Average())).Sum() / data.Length);
+        double bandwidth = 1.06 * standardDeviation * Math.Pow(data.Length, -0.2);
+        return bandwidth;
+    }*/
 }
