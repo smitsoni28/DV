@@ -4,8 +4,6 @@ using System.Collections.Generic;;
 
 public class VisDensityplot : Vis
 {   
-
-    public LineRenderer lineRenderer;
     public VisDensityplot()
     {
         title = "Densityplot";

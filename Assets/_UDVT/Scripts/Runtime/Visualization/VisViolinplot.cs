@@ -7,62 +7,90 @@ public class VisViolinplot : Vis
     {
         title = "VisViolinplot";
         // Define Data Mark and Tick Prefab
-        dataMarkPrefab = (GameObject)Resources.Load("Prefabs/DataVisPrefabs/Marks/Cube");// Sphere is choosen to obtain the circle density plot
+        dataMarkPrefab = (GameObject)Resources.Load("Prefabs/DataVisPrefabs/Marks/Cube");// cube is choosen to obtain the box plot
         tickMarkPrefab = (GameObject)Resources.Load("Prefabs/DataVisPrefabs/VisContainer/Tick");
     }
 
     public override GameObject CreateVis(GameObject container)
     {
+        
         // parameters for KDE method
-        double sigma = 1; //default value mentioned in wikipedia about KDE/*KernelDensityEstimation.CalculateBandwidth(dataSets[0].ElementAt(0).Value)*/
-        int nsteps = 100; //default value mentioned in the KDE class 
+        double sigma = 1; // Default value mentioned in Wikipedia about KDE
+        int nsteps = 100; // Default value mentioned in the KDE class
 
         // Call the KDE method to calculate points
+        // Pass the value of the first element in the first dataset, sigma, and nsteps to calculate points using KDE
         double[,] calculated_points = KernelDensityEstimation.KDE(dataSets[0].ElementAt(0).Value, sigma, nsteps);
-        //VisViolinplotCalculations visViolion = new VisViolinplotCalculations(dataSets[0].ElementAt(0).Value);
         ViolinPlotCalculation violinPlotCalculation = new ViolinPlotCalculation(dataSets[0].ElementAt(0).Value);
+    
+        
+
+        // Set the positions of the line renderer to the calculated points
+        Vector3[] linePositions = new Vector3[nsteps];
 
         // Extract the x and y values from the calculated_points
         double[] calculatedPoints_XValues = new double[nsteps];
         double[] calculatedPoints_YValues = new double[nsteps];
-        double[] statis= { violinPlotCalculation.getIQR(), 5, 19, 51 };
         for (int i = 0; i < nsteps; i++)
         {
             calculatedPoints_XValues[i] = calculated_points[i, 0];
             calculatedPoints_YValues[i] = calculated_points[i, 1];
         }
 
-        // Display the visualization in Unity
-        /*for (int i = 0; i < nsteps; i++)
-        {
-            // Create a data mark at each x, y point
-            GameObject dataMark = Instantiate(dataMarkPrefab, new Vector3((float)x[i], (float)y[i], 0f), Quaternion.identity);
-            // Set the data mark's position and scale according to your preference
-
-            // Connect the points to form a continuous distribution line
-            lineRenderer.positionCount = nsteps;
-            lineRenderer.SetPosition(i, new Vector3((float)x[i], (float)y[i], 0f));
-        }*/
-
+        // Create Axes and Grids
+        // Call the base class method to create the visualization container
         base.CreateVis(container);
 
+        // Create X and Y axes using the calculated x and y values
         //visContainer.CreateAxis(dataSets[0].ElementAt(0).Key, calculatedPoints_XValues, Direction.X);
-        visContainer.CreateAxis(" ", dataSets[0].ElementAt(0).Value, Direction.Y);
-        //visContainer.CreateGrid(/*Direction.X,*/ Direction.Y);
 
+        visContainer.CreateAxis(" ", calculatedPoints_YValues, Direction.Y);
 
+        // Create grids based on the X and Y axes
+        //visContainer.CreateGrid(Direction.X, Direction.Y);
+
+        // Set colors and Vis channel
+        // Set the color channel based on the calculated y values
         visContainer.SetChannel(VisChannel.Color, calculatedPoints_YValues);
 
+        // Set X and Y position channels to the calculated x and y values
+        //visContainer.SetChannel(VisChannel.XPos, calculatedPoints_XValues);
+        visContainer.SetChannel(VisChannel.YPos, calculatedPoints_YValues);
 
-        //visContainer.SetChannel(VisChannel.XPos, statis);
-        visContainer.SetChannel(VisChannel.YSize, dataSets[0].ElementAt(0).Value);
-
-        // Draw a line connecting all the calculated points
-
+        // Plot all calculated points
+        // Create data marks using the data mark prefab
         visContainer.CreateDataMarks(dataMarkPrefab);
 
-        // Rescale Chart
-        visContainerObject.transform.localScale = new Vector3(width, height, depth);
+        // Create quartile mark
+        quartileMark = new GameObject("QuartileMark");
+        //quartileMark.name = "QuartileMark";
+        quartileMark.transform.SetParent(visContainer.transform);
+        quartileMark.transform.localScale = new Vector3(0.5f, (float)violinPlotCalculation.getIQR(), 0.5f);
+        quartileMark.transform.position = new Vector3(0f, (float)violinPlotCalculation.getMedian(), 0f);
+
+        // Create min/max mark
+        minMaxMark = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //minMaxMark.name = "MinMaxMark";
+        minMaxMark.transform.SetParent(visContainer.transform);
+        minMaxMark.transform.localScale = new Vector3(1f, (float)violinPlotCalculation.getMaxValue() - (float)violinPlotCalculation.getMinValue(), 0.5f);
+        minMaxMark.transform.position = new Vector3(0f, ((float)violinPlotCalculation.getMinValue() + (float)violinPlotCalculation.getMaxValue()) / 2f, 0f);
+
+        // Create a line renderer to draw the line connecting the data marks
+        LineRenderer lineRenderer = visContainerObject.AddComponent<LineRenderer>();
+        lineRenderer.material.color = Color.black;
+        lineRenderer.startWidth = 0.005f;
+        lineRenderer.endWidth = 0.005f;
+
+        // Get the positions of the data marks and set them as the positions for the line renderer
+        var marks = visContainer.dataMarkList;
+        Vector3[] positions = new Vector3[marks.Count];
+        for (int i = 0; i < marks.Count; ++i)
+        {
+            positions[i] = marks[i].GetDataMarkChannel().position;
+        }
+
+        lineRenderer.positionCount = positions.Length; // Set the number of vertices for the line renderer
+        lineRenderer.SetPositions(positions); // Set the positions of the line renderer
 
         return visContainerObject;
     }
