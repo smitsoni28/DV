@@ -34,7 +34,7 @@ public class VisHistogram : Vis
         double[] selectedBinRanges;
         double[] selectedFrequencies;
 
-        // Compare the binning rules and select the one with the highest number of bins
+        //Compare the binning rules and select the one with the highest number of bins
         if (sturgesBinRanges.Length >= riceBinRanges.Length && sturgesBinRanges.Length >= scottBinRanges.Length)
         {
             selectedBinRanges = sturgesBinRanges;

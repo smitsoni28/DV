@@ -11,6 +11,7 @@ public class RiceRule
         this.data = data;
     }
 
+    // Calculate bin ranges using Rice's Rule
     public double[] GetBinRanges()
     {
         int numBins = (int)Math.Ceiling(2 * Math.Pow(data.Length, 1.0 / 3.0));
@@ -23,11 +24,10 @@ public class RiceRule
         {
             binRanges[i] = (1 + i) * binSize;
         }
-        // Debug.Log("Data set length in Rice: " + data.Length);
-        // Debug.Log("Selected bin ranges length in Rice: " + binRanges.Length);
         return binRanges;
     }
 
+    // Calculate frequencies for each bin using the bin ranges
     public double[] GetFrequencies()
     {
         double[] binRanges = GetBinRanges();
@@ -35,14 +35,17 @@ public class RiceRule
 
         for (int i = 0; i < frequencies.Length; i++)
         {
-            if (i == 0) {
-                frequencies[i] = data.Count(x => x >= this.data.Min() && x < binRanges[0]);
+            if (i == 0)
+            {
+                // Calculate frequency for the first bin
+                frequencies[i] = data.Count(x => x >= data.Min() && x < binRanges[0]);
             }
-
-            frequencies[i] = data.Count(x => x >= binRanges[i] && x < binRanges[i + 1]);
+            else
+            {
+                // Calculate frequency for the remaining bins
+                frequencies[i] = data.Count(x => x >= binRanges[i] && x < binRanges[i + 1]);
+            }
         }
-        //Debug.Log("Selected frequencies length in Sturges: " + frequencies.Length);
         return frequencies;
     }
-        
 }
