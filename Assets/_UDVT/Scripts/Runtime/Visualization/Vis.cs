@@ -12,6 +12,8 @@ public enum VisType
     Scatterplot,
     Histogram,
     Densityplot,
+    Violinplot,
+    HorizonGraph,
     NumberOfVisTypes
 }
 
@@ -213,6 +215,10 @@ public class Vis
                 return new VisHistogram();
             case VisType.Densityplot:
                 return new VisDensityplot();
+            case VisType.Violinplot:
+                return new VisViolinPlot();
+            case VisType.HorizonGraph:
+                return new VisHorizonGraph();
         }
     }
 

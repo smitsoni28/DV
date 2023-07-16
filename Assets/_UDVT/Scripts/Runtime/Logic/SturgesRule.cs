@@ -11,6 +11,7 @@ public class SturgesRule
         this.data = data;
     }
 
+    // Calculate bin ranges using Sturges' Rule
     public double[] GetBinRanges()
     {
         int numBins = (int)Math.Ceiling(Math.Log(data.Length, 2));
@@ -23,11 +24,10 @@ public class SturgesRule
         {
             binRanges[i] = (i + 1) * binSize;
         }
-        // Debug.Log("Data set length in Sturges:: " + data.Length);
-        // Debug.Log("Selected bin ranges length in Sturges: " + binRanges.Length);
         return binRanges;
     }
 
+    // Calculate frequencies for each bin using the bin ranges
     public double[] GetFrequencies()
     {
         double[] binRanges = GetBinRanges();
@@ -35,16 +35,17 @@ public class SturgesRule
 
         for (int i = 0; i < frequencies.Length; i++)
         {
-            if (i == 0) {
-                frequencies[i] = data.Count(x => x >= this.data.Min() && x < binRanges[0]);
+            if (i == 0)
+            {
+                // Calculate frequency for the first bin
+                frequencies[i] = data.Count(x => x >= data.Min() && x < binRanges[0]);
             }
-
-            frequencies[i] = data.Count(x => x >= binRanges[i] && x < binRanges[i + 1]);
+            else
+            {
+                // Calculate frequency for the remaining bins
+                frequencies[i] = data.Count(x => x >= binRanges[i] && x < binRanges[i + 1]);
+            }
         }
-        //Debug.Log("Selected frequencies length in Sturges: " + frequencies.Length);
         return frequencies;
     }
-    
-    
-    
 }
